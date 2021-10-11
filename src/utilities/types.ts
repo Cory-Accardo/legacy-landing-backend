@@ -12,3 +12,20 @@ export interface CheckoutRequest{
     quantity: number //should refer to the number of items to buy
 
 }
+
+export interface BusinessRow {
+    business_id : number
+    stripe_pk : string
+    business_name : string
+}
+
+export interface ProductsRow {
+    business_id : number
+    stripe_pk : string
+    business_name : string
+}
+
+export interface StripeKeysRow {
+    stripe_pk : string
+    stripe_sk : string
+}
