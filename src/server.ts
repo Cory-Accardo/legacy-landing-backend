@@ -28,11 +28,11 @@ server.post('/create-checkout-session', async (req, res) => {
       const productObject : Stripe.Product = await stripe.products.retrieve(prod.productId);
       const priceObject : Stripe.Price = (await stripe.prices.list({limit: 1, product: prod.productId})).data[0];
   
-    return <Stripe.Checkout.SessionCreateParams.LineItem>{ 
-        price: priceObject.id, 
-        quantity: prod.quantity, 
-        description: productObject.description
-      }
+      return <Stripe.Checkout.SessionCreateParams.LineItem>{ 
+          price: priceObject.id, 
+          quantity: prod.quantity, 
+          description: productObject.description
+        }
       }))
       
     const session : Stripe.Checkout.Session = await stripe.checkout.sessions.create({
