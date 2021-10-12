@@ -252,4 +252,8 @@ class legacyDatabase extends sqlite3.Database{
 
 }
 
+/**
+ * The database client for access to the sqlite3 legacy database. Contains many helpful methods.
+ */
+
 export const db = new legacyDatabase();
