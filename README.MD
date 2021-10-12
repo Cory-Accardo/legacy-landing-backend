@@ -1,0 +1,1 @@
+Type yarn start-server to start the server.

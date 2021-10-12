@@ -1,52 +1,46 @@
 import express from 'express';
 import Stripe from 'stripe';
-import { CheckoutRequest } from './types';
+import { CheckoutRequest, Tables, BusinessRow, CheckoutProduct } from './utilities/types';
+import { db } from './database'
 
-const STRIPE_SECRET_KEY : string = 'sk_test_51IqWoeJsYPVWfSRX2FtBJJTNVc1ceEd1d9TJtz9aAT6F08rklRogPeXFyKeRFTcCb6AJSBqMc8XpsZWPM4wpe6vF00ZDTGQ1WP'
-const stripe = require('stripe')(STRIPE_SECRET_KEY, {
-    apiVersion: '2020-08-27',
-    appInfo: { // For sample support and debugging, not required for production:
-      name: "stripe-samples/checkout-one-time-payments",
-      version: "0.0.1",
-      url: "https://github.com/stripe-samples/checkout-one-time-payments"
-    }
-  });
 
 const server = express();
-const PORT : number = 443;
+const PORT : number = 80;
 
 
 
 server.listen(PORT, () => console.log(`Server started at ${PORT}`));
-
-server.use(express.static('../static'));
-server.use(express.urlencoded({ extended: true }))
+server.use(express.json())
 
 
 server.post('/create-checkout-session', async (req, res) => {
 
-    const { productIds, quantity } = req.body as CheckoutRequest;
+    const { business_id, products } = req.body as CheckoutRequest;
 
+    const stripe_sk = await db.getBusinessSecretKey(business_id);
+    
+    const stripe : Stripe = require('stripe')(stripe_sk);
 
+    const line_items : Stripe.Checkout.SessionCreateParams.LineItem[] = await Promise.all(products.map( async (prod : CheckoutProduct) =>{
+      const productObject : Stripe.Product = await stripe.products.retrieve(prod.productId);
+      const priceObject : Stripe.Price = (await stripe.prices.list({limit: 1, product: prod.productId})).data[0];
+
+      return <Stripe.Checkout.SessionCreateParams.LineItem>{ 
+        price: priceObject.id, 
+        quantity: prod.quantity, 
+        description: productObject.description
+        }
+    }))
+    
     const session : Stripe.Checkout.Session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
-      line_items: [
-        {
-          price_data: {
-            currency: 'usd',
-            product_data: {
-              name: 'T-shirt',
-            },
-            unit_amount: 2000,
-          },
-          quantity: 1,
-        },
-      ],
+      line_items: line_items,
       mode: 'payment',
-      success_url: 'https://google.com',
-      cancel_url: 'https://google.com',
+      success_url: 'https://vsedc.org',
+      cancel_url: 'https://www.yourtango.com/sites/default/files/styles/header_slider/public/image_blog/im-not-happy.jpg?itok=sL6HolZI',
     });
-  
-    res.redirect(303, session.url);
+
+    return res.status(200).json(session)
+    
   });
   
