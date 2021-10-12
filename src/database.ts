@@ -1,5 +1,4 @@
 import { sqlite3 } from "sqlite3";
-import Stripe from "stripe";
 import { Tables, Row} from './utilities/types';
 import { getPrimaryKey } from './utilities/utils';
 
@@ -195,30 +194,17 @@ class legacyDatabase extends sqlite3.Database{
      * @param stripe_pk (optional) - The new stripe public key of the business.
      * @param business_name (optional)  - The new business name.
      * @returns A promise to update the business
-     * @throws a 'Update must contain an updated value' if both variables are left undefined / null
+     * @throws a 'Update must contain an updated value' if both variables are left undefined / null.
      */
 
-    public async updateBusiness(business_id : number, stripe_pk? : string, business_name? : string): Promise<Boolean>{
+    public async updateBusiness(business_id : number, stripe_pk? : string | null, business_name? : string | null): Promise<Boolean>{
 
         let row : Row.Business = await this.readRow(business_id, Tables.business) as Row.Business;
 
-        if(stripe_pk === undefined || null && business_name == undefined || null) throw Error('Update must contain an updated value');
+        if( (!stripe_pk && !business_name) ) throw new Error('Update must contain an updated value');
 
-        //Occurs if update to business name only
-        else if(stripe_pk === undefined || null && business_name !== undefined || null){
-            row.business_name = business_name;
-        }
-
-        //Occurs if update to stripe_pk only
-        else if(stripe_pk !== undefined || null && business_name === undefined || null){
-            row.stripe_pk = stripe_pk;
-        }
-
-        //Occurs if update to both business name and stripe_pk
-        else{
-            row.business_name = business_name;
-            row.stripe_pk = stripe_pk;
-        }
+        if(stripe_pk) row.stripe_pk = stripe_pk;
+        if(business_name) row.business_name = business_name;
 
         return await this.updateRow(row);
     }
@@ -261,7 +247,6 @@ class legacyDatabase extends sqlite3.Database{
 
         return await this.deleteRow(stripe_pk, Tables.stripeKey);
     }
-
 
     
 
