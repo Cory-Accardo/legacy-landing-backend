@@ -21,7 +21,7 @@ class legacyDatabase extends sqlite3.Database{
      * @throws a rejection if any of these tables formed an error.
      */
     
-    public formTables(): Promise<Boolean>{
+    private formTables(): Promise<Boolean>{
         return new Promise<Boolean> ((resolve, reject) =>{
         this.run(`CREATE TABLE ${Tables.business} (business_id INTEGER PRIMARY KEY, stripe_pk TEXT NOT NULL UNIQUE, business_name TEXT NOT NULL);`, (err: Error) =>{
             if(err) reject(err);
@@ -33,7 +33,13 @@ class legacyDatabase extends sqlite3.Database{
         })
     }
 
-    public deleteTables(): Promise<Boolean>{
+    /**
+     * Deletes all tables in the database
+     * @returns A boolean Promise to dekete these tables
+     * @throws a rejection if any of these deletions formed an error.
+     */
+
+    private deleteTables(): Promise<Boolean>{
         return new Promise<Boolean> ((resolve, reject) =>{
         this.run(`DROP TABLE ${Tables.business};`, (err: Error) =>{
             if(err) reject(err);
@@ -257,3 +263,6 @@ class legacyDatabase extends sqlite3.Database{
  */
 
 export const db = new legacyDatabase();
+
+
+
