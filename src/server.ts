@@ -47,8 +47,7 @@ server.post('/create-checkout-session', async (req, res) => {
   }
 
   catch(error : any){
-    console.log(error);
-
+    
     if("statusCode" in error && "code" in error) return res.status(error.statusCode).json(error.code); //Indicates a Stripe Error formatting
     else return res.status(500).json(error); //Indicates some unhandled error
 
