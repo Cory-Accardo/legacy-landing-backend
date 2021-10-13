@@ -1,12 +1,23 @@
 
 
 /**
- * Enumerations of the various relations in the sqlite3 database (see the ERD in the /db directory). The values are the table names.
+ * Enumerations tables that exist in the DB and their respective primary keys
+ * If you decide to add more relations / tables ensure that you add both a name enmeration and a primaryKey getter statement.
+ * The values should be exactly the same as those added in SQL, but the member names can be anything.
  */
 
-export enum Tables{
-    business = 'business',
-    stripeKey = 'stripe_key'
+export namespace Tables{
+
+    export enum Name {
+        business = 'business',
+        //Add more as needed
+    }
+    export const getPrimaryKeyOf = (table : Tables.Name) => {
+        if(table == Tables.Name.business) return 'business_id';
+        else throw new Error(`Tables.getPrimaryKeyOf has not implemented ${table}. Go to src/utilities/types.ts to implement!`)
+        //Add more as needed
+    }
+
 }
 
 /**
@@ -62,62 +73,38 @@ export namespace Checkout{
 
 }
 
+    /**
+     * A row namespace. If you decide to add more row types ensure that you update Generic and add additional
+     * interfaces within this namespace.
+     */
+
 export namespace Row {
 
     /**
      * A generic type that ensures the object is one of the Rows defined in the namespace Row
+     * If you decide to add more rows, and wish to use current methods, please update this.
      */
 
-    export type Generic = Business | StripeKeys
+    export type Generic = Business //Add more as needed
 
     /**
      * An object representation of a business row
      * @member business_id - Refers to the unique primary key of the business
-     * @member stripe_pk - Refers the the stripe public key found in the stripe dashboard
+     * @member stripe_rk - Refers the the stripe restricted key found in the stripe dashboard.
+     * Important! RK must allow for Checkout Session write and Plans read
      * @member business_name - Refers to the name of the business
 
      */
 
     export interface Business {
         business_id : number
-        stripe_pk : string
+        stripe_rk : string
         business_name : string
     }
 
-    /**
-     * A user defined type guard for a Business interface
-     * @param object - The object to be verified
-     * @returns true/false as to whether the object conforms to the Business interface
-     */
+    //Add more as needed
 
-    export const isBusiness = (object: any) => {
-        return "business_id" in object && typeof object.business_id === 'number'
-            && "stripe_pk" in object && typeof object.stripe_pk === 'string'
-            && "business_name" in object && typeof object.business_name === 'string'
-    
-    }
 
-    /**
-     * An object representation of a stripe_keys row
-     * @member stripe_pk - Refers the the stripe public key found in the stripe dashboard
-     * @member stripe_sk - Refers the the stripe secret key found in the stripe dashboard
-     */
-
-    export interface StripeKeys {
-        stripe_pk : string
-        stripe_sk : string
-    }
-
-    /**
-     * A user defined type guard for a StripeKEys interface
-     * @param object - The object to be verified
-     * @returns true/false as to whether the object conforms to the StripeKeys interface
-     */
-
-    export const isStripeKeys = (object: any): object is StripeKeys => {
-        return "stripe_pk" in object && typeof object.stripe_pk === 'string'
-            && "stripe_sk" in object && typeof object.stripe_sk === 'string'
-    }
 
 }
 

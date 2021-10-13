@@ -20,9 +20,9 @@ server.post('/create-checkout-session', async (req, res) => {
   try {
     const { business_id, products } = req.body as Checkout.Request;
 
-    const stripe_sk = await db.getBusinessSecretKey(business_id);
+    const stripe_rk = await db.getBusinessRestrictedKey(business_id);
       
-    const stripe : Stripe = require('stripe')(stripe_sk);
+    const stripe : Stripe = require('stripe')(stripe_rk);
   
     const line_items : Stripe.Checkout.SessionCreateParams.LineItem[] = await Promise.all(products.map( async (prod : Checkout.Product) =>{
       const productObject : Stripe.Product = await stripe.products.retrieve(prod.productId);
@@ -47,6 +47,7 @@ server.post('/create-checkout-session', async (req, res) => {
   }
 
   catch(error : any){
+    console.log(error);
 
     if("statusCode" in error && "code" in error) return res.status(error.statusCode).json(error.code); //Indicates a Stripe Error formatting
     else return res.status(500).json(error); //Indicates some unhandled error
