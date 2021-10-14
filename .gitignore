@@ -1,3 +1,5 @@
 node_modules
 sqlite-tool
 db/legacy.db
+
+.env

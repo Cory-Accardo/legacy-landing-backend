@@ -9,9 +9,9 @@ import { Tables, Row} from './utilities/types';
 import Cryptr from "cryptr";
 require('dotenv').config({ path: '../.env' })
 
-if( !("STRIPE_SK_ENCRYPTION" in process.env) ) throw Error("Environment file does not include: STRIPE_SK_ENCRYPTION");
+if( !("STRIPE_RK_ENCRYPTION" in process.env) ) throw Error("Environment file does not include: STRIPE_RK_ENCRYPTION");
 
-const cryptr = new Cryptr(process.env.STRIPE_SK_ENCRYPTION as string);
+const cryptr = new Cryptr(process.env.STRIPE_RK_ENCRYPTION as string);
 
 const DB_FILEPATH = '../db/legacy.db';
 const sqlite3 : sqlite3 = require('sqlite3').verbose();
