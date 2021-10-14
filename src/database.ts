@@ -1,3 +1,9 @@
+/*
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Written by Cory Accardo, Github: Cory-Accardo, email: accardo@usc.edu
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*/
+
 import { sqlite3 } from "sqlite3";
 import { Tables, Row} from './utilities/types';
 import Cryptr from "cryptr";
