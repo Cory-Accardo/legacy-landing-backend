@@ -5,6 +5,7 @@ Written by Cory Accardo, Github: Cory-Accardo, email: accardo@usc.edu
 */
 
 import express from 'express';
+import cors from 'cors';
 import Stripe from 'stripe';
 import { Checkout } from './utilities/types';
 import { db } from './database'
@@ -16,14 +17,17 @@ const PORT : number = 80;
 
 
 server.listen(PORT, () => console.log(`Server started at ${PORT}`));
-server.use(express.json())
+server.use(express.json(), cors({
+  origin: '*'
+}))
 
 
 server.post('/create-checkout-session', async (req, res) => {
 
-  if(!Checkout.isRequest(req.body)) return res.status(400).json("Request body does not meet specifications of @types/Checkout.Request")
-
   try {
+    
+    if(!Checkout.isRequest(req.body)) return res.status(400).json("Request body does not meet specifications of @types/Checkout.Request")
+
     const { business_id, products } = req.body as Checkout.Request;
 
     const stripe_rk = await db.getBusinessRestrictedKey(business_id);

@@ -250,5 +250,3 @@ class legacyDatabase extends sqlite3.Database{
 
 export const db = new legacyDatabase();
 
-
-
