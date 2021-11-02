@@ -17,7 +17,7 @@ require('dotenv').config({ path: path.join(__dirname, '../', '.env')})
 if( !("ADMIN_PASS" in process.env) ) throw Error("Environment file does not include: ADMIN_PASS");
 
 const server = express();
-const PORT : number = 80;
+const PORT : number = 3000;
 
 
 server.listen(PORT, () => console.log(`Server started at ${PORT}`));
