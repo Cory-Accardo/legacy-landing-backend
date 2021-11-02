@@ -7,14 +7,19 @@ Written by Cory Accardo, Github: Cory-Accardo, email: accardo@usc.edu
 import { sqlite3 } from "sqlite3";
 import { Tables, Row} from './utilities/types';
 import Cryptr from "cryptr";
-require('dotenv').config({ path: '../.env' })
+import path from 'path';
+require('dotenv').config({ path: path.join(__dirname, '../', '.env')})
 
 if( !("STRIPE_RK_ENCRYPTION" in process.env) ) throw Error("Environment file does not include: STRIPE_RK_ENCRYPTION");
 
 const cryptr = new Cryptr(process.env.STRIPE_RK_ENCRYPTION as string);
 
-const DB_FILEPATH = '../db/legacy.db';
+const DB_FILEPATH = path.join(__dirname, '../db', 'legacy.env');
 const sqlite3 : sqlite3 = require('sqlite3').verbose();
+
+/**
+ * A database class with methods designed to be used with legacy businesses.
+ */
 
 class legacyDatabase extends sqlite3.Database{
 
@@ -236,6 +241,15 @@ class legacyDatabase extends sqlite3.Database{
             this.get(`SELECT stripe_rk FROM ${Tables.Name.business} WHERE business_id=${business_id};`, (err: Error, data ) =>{
                 if(err) reject(err);
                 resolve(cryptr.decrypt(data.stripe_rk)); //Ensures that stripe key is decrypted.
+            })
+        })
+    }
+
+    public readBusinesses(): Promise<Row.Business[]>{
+        return new Promise<Row.Business[]>( (resolve, reject)=>{
+            this.all(`SELECT * FROM ${Tables.Name.business}`, (err: Error, data ) =>{
+                if(err) reject(err);
+                resolve(data);
             })
         })
     }

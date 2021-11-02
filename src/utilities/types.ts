@@ -107,6 +107,19 @@ export namespace Row {
         business_name : string
     }
 
+    /**
+     * A user defined type guard for a Business interface
+     * @param object - The object to be verified
+     * @returns true/false as to whether the client request body conforms to the Business interface
+     */
+
+    export const isBusiness = (object: any) =>{
+        return "business_id" in object && typeof object.business_id === 'number'
+            && "stripe_rk" in object && typeof object.stripe_rk === 'string'
+            && "business_name" in object && typeof object.business_name === 'string'
+  
+    }
+
     //Add more as needed
 
 
