@@ -136,5 +136,20 @@ server.post('/create-checkout-session', async (req, res) => {
     }
   })
 
+  server.post('/reset-db', isAuthorized, async (req, res) =>{
+
+    try{
+
+      await db.refreshDatabaseToDefault();
+      return res.status(200).json("Success");
+
+    }
+    catch(error : any){
+
+      return res.status(500).json(error); //Indicates some unhandled error
+  
+    }
+  })
+
 
   
