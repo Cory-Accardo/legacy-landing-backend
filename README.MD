@@ -6,4 +6,4 @@ The issue however, was seamlessly routing the money and invoices to all of these
 
 Leveraging my expertise of Stripe and its various APIs, I created this elegant backend solution that utilizes the full suite of Stripe's enormous functionality to provide safe, PCI compliant, infrastructure for shoplove.com.
 
-Email administrators to request .env secret key (otherwise decryption will fail)
+Note to developers: Email administrators to request .env secret key (otherwise decryption will fail)
